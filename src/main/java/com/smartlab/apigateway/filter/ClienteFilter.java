@@ -1,6 +1,7 @@
 package com.smartlab.apigateway.filter;
 
 import com.smartlab.apigateway.util.JwtUtil;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -42,7 +43,8 @@ public class ClienteFilter extends AbstractGatewayFilterFactory<ClienteFilter.Co
 
                     List<String> roles = jwtUtil.extractRoles(authHeader);
                     System.out.println(roles);
-                    if(roles.contains("CLIENTE")){
+                    System.out.println(config.getRol());
+                    if(roles.contains(config.getRol())){
                         request = exchange.getRequest()
                                 .mutate()
                                 .header("LoggedInUser", jwtUtil.extractUserName(authHeader))
@@ -60,7 +62,8 @@ public class ClienteFilter extends AbstractGatewayFilterFactory<ClienteFilter.Co
             return chain.filter(exchange.mutate().request(request).build());
         });
     }
+    @Data
     public static class Config{
-
+        private String rol;
     }
 }
